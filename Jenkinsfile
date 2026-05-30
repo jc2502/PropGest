@@ -30,9 +30,10 @@ pipeline {
                 sh 'echo "Esperando a que backend esté listo..."'
                 sh '''
                     for i in $(seq 1 30); do
-                        curl -s http://backend:5000/ > /dev/null && break
+                        curl -sf http://backend:5000/ > /dev/null && echo "Backend listo!" && exit 0
                         sleep 2
                     done
+                    echo "ERROR: backend no respondio tras 60s" && exit 1
                 '''
             }
         }
