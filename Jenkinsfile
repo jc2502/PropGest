@@ -30,7 +30,7 @@ pipeline {
                 sh 'echo "Esperando a que backend esté listo..."'
                 sh '''
                     for i in $(seq 1 30); do
-                        curl -s http://localhost:5000/ > /dev/null && break
+                        curl -s http://backend:5000/ > /dev/null && break
                         sleep 2
                     done
                 '''
@@ -41,11 +41,11 @@ pipeline {
             steps {
                 sh '''
                     docker run --rm --network propgest_default \
-                        -v "$PWD/tests/jmeter:/tests" \
+                        --volumes-from jenkins \
                         justb4/jmeter:latest \
-                        -n -t /tests/PropGest_TestPlan.jmx \
-                        -l /tests/results.jtl \
-                        -e -o /tests/report \
+                        -n -t /var/jenkins_home/workspace/PropGest_master/tests/jmeter/PropGest_TestPlan.jmx \
+                        -l /var/jenkins_home/workspace/PropGest_master/tests/jmeter/results.jtl \
+                        -e -o /var/jenkins_home/workspace/PropGest_master/tests/jmeter/report \
                         -Jhost=backend -Jport=5000
                 '''
             }
@@ -66,13 +66,13 @@ pipeline {
                 withSonarQubeEnv('SonarCloud') {
                     sh '''
                         docker run --rm \
-                            -v "$PWD:/usr/src" \
+                            --volumes-from jenkins \
                             sonarsource/sonar-scanner-cli:latest \
-                            -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
-                            -Dsonar.organization=${SONAR_ORG} \
+                            -Dsonar.projectKey="${SONAR_PROJECT_KEY}" \
+                            -Dsonar.organization="${SONAR_ORG}" \
                             -Dsonar.host.url=https://sonarcloud.io \
-                            -Dsonar.login=${SONAR_TOKEN} \
-                            -Dsonar.sources=backend/src,frontend/src \
+                            -Dsonar.login="${SONAR_TOKEN}" \
+                            -Dsonar.sources=/var/jenkins_home/workspace/PropGest_master/backend/src,/var/jenkins_home/workspace/PropGest_master/frontend/src \
                             -Dsonar.exclusions=**/node_modules/**,**/build/**
                     '''
                 }
@@ -84,8 +84,8 @@ pipeline {
                 sh '''
                     docker run -d --rm --name zap \
                         --network propgest_default \
+                        --volumes-from jenkins \
                         -p ${ZAP_PORT}:8090 \
-                        -v "$PWD/tests/zap:/zap/wrk" \
                         -e ZAP_API_KEY=${ZAP_API_KEY} \
                         ghcr.io/zaproxy/zaproxy:stable \
                         zap.sh -daemon -port 8090 -config api.key=${ZAP_API_KEY}
@@ -94,8 +94,8 @@ pipeline {
                 sh '''
                     docker exec zap zap-full-scan.py \
                         -t ${APP_URL} \
-                        -c /zap/wrk/zap.conf \
-                        -r /zap/wrk/zap-report.html \
+                        -c /var/jenkins_home/workspace/PropGest_master/tests/zap/zap.conf \
+                        -r /var/jenkins_home/workspace/PropGest_master/tests/zap/zap-report.html \
                         -z "-config api.key=${ZAP_API_KEY}"
                 '''
                 sh 'docker stop zap || true'
