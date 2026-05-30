@@ -83,6 +83,7 @@ pipeline {
 
         stage('OWASP ZAP - Security Scan') {
             steps {
+                sh 'docker rm -f zap || true'
                 sh '''
                     docker run -d --rm --name zap \
                         --network propgest_default \
@@ -105,7 +106,8 @@ pipeline {
             }
             post {
                 always {
-                    publishHTML(target: [
+                    sh 'docker stop zap || true'
+                publishHTML(target: [
                         allowMissing: true,
                         reportDir: 'tests/zap',
                         reportName: 'OWASP ZAP Report',
