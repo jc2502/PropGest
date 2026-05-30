@@ -95,6 +95,7 @@ pipeline {
                 sh '''
                     # Copiar config a /zap/wrk/ y ejecutar scan
                     ZAP_WRK=/var/jenkins_home/workspace/PropGest_master/tests/zap
+                    docker exec zap mkdir -p /zap/wrk
                     docker exec zap cp $ZAP_WRK/zap.conf /zap/wrk/
                     docker exec zap zap-full-scan.py \
                         -t ${APP_URL} \
