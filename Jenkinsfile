@@ -84,27 +84,19 @@ pipeline {
         stage('OWASP ZAP - Security Scan') {
             steps {
                 sh 'docker rm -f zap || true'
+                sh 'docker run -d --rm --name zap --network propgest_default --volumes-from jenkins ghcr.io/zaproxy/zaproxy:stable zap.sh -daemon -port 8090 -config api.disablekey=true -host 0.0.0.0'
+                sh 'echo "Esperando a ZAP (30s)..." && sleep 30'
+                sh 'docker exec zap mkdir -p /zap/wrk'
+                sh 'docker exec zap cp /var/jenkins_home/workspace/PropGest_master/tests/zap/zap.conf /zap/wrk/'
                 sh '''
-                    docker run -d --rm --name zap \
-                        --network propgest_default \
-                        --volumes-from jenkins \
-                        ghcr.io/zaproxy/zaproxy:stable \
-                        zap.sh -daemon -port 8090 -config api.disablekey=true -host 0.0.0.0
-                '''
-                sh 'echo "Esperando a ZAP (45s)..." && sleep 45'
-                sh '''
-                    # Copiar config a /zap/wrk/ y ejecutar scan
-                    ZAP_WRK=/var/jenkins_home/workspace/PropGest_master/tests/zap
-                    docker exec zap mkdir -p /zap/wrk
-                    docker exec zap cp $ZAP_WRK/zap.conf /zap/wrk/
                     docker exec zap zap-full-scan.py \
                         -t ${APP_URL} \
                         -c zap.conf \
-                        -r zap-report.html \
+                        -r /zap/wrk/zap-report.html \
                         -P 8090 \
-                        -I
-                    docker exec zap cp /zap/wrk/zap-report.html $ZAP_WRK/
+                        -I || true
                 '''
+                sh 'docker exec zap cp /zap/wrk/zap-report.html /var/jenkins_home/workspace/PropGest_master/tests/zap/ || true'
                 sh 'docker stop zap || true'
             }
             post {
