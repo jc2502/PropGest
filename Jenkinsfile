@@ -4,7 +4,7 @@ pipeline {
     environment {
         // SonarCloud
         SONAR_TOKEN      = credentials('sonarcloud-token')
-        SONAR_ORG        = 'Jorge Claros'
+        SONAR_ORG        = 'jc2502'
         SONAR_PROJECT_KEY = 'PropGest'
 
         // OWASP ZAP
