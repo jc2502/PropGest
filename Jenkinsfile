@@ -74,7 +74,8 @@ pipeline {
                             -Dsonar.organization="${SONAR_ORG}" \
                             -Dsonar.host.url=https://sonarcloud.io \
                             -Dsonar.login="${SONAR_TOKEN}" \
-                            -Dsonar.sources=/var/jenkins_home/workspace/PropGest_master/backend/src,/var/jenkins_home/workspace/PropGest_master/frontend/src \
+                            -Dsonar.projectBaseDir=/var/jenkins_home/workspace/PropGest_master \
+                            -Dsonar.sources=backend/src,frontend/src \
                             -Dsonar.exclusions=**/node_modules/**,**/build/**
                     '''
                 }
@@ -94,9 +95,10 @@ pipeline {
                         -c zap.conf \
                         -r /zap/wrk/zap-report.html \
                         -P 8090 \
-                        -I || true
+                        -I ; \
+                    docker exec zap cp /zap/wrk/zap-report.html \
+                        /var/jenkins_home/workspace/PropGest_master/tests/zap/ || true
                 '''
-                sh 'docker exec zap cp /zap/wrk/zap-report.html /var/jenkins_home/workspace/PropGest_master/tests/zap/ || true'
                 sh 'docker stop zap || true'
             }
             post {
