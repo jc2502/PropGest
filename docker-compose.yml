@@ -34,5 +34,9 @@ services:
       - ./frontend:/app
       - /app/node_modules
 
+networks:
+  default:
+    name: propgest_default
+
 volumes:
   mongo_data:
