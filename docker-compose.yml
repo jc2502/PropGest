@@ -1,7 +1,6 @@
 services:
   mongodb:
     image: mongo:7
-    container_name: propgest_mongo
     restart: always
     ports:
       - "27017:27017"
@@ -10,7 +9,6 @@ services:
 
   backend:
     build: ./backend
-    container_name: propgest_backend
     restart: always
     ports:
       - "5000:5000"
@@ -24,7 +22,6 @@ services:
 
   frontend:
     build: ./frontend
-    container_name: propgest_frontend
     restart: always
     ports:
       - "3000:3000"
@@ -37,6 +34,7 @@ services:
 networks:
   default:
     name: propgest_default
+    external: true
 
 volumes:
   mongo_data:

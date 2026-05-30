@@ -24,6 +24,8 @@ pipeline {
 
         stage('Build & Start') {
             steps {
+                sh 'docker-compose down --remove-orphans || true'
+                sh 'docker container prune -f || true'
                 sh 'docker-compose up -d --build'
                 sh 'echo "Esperando a que backend esté listo..."'
                 sh '''
