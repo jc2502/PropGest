@@ -94,6 +94,7 @@ pipeline {
                 '''
                 sh 'echo "Esperando a ZAP..." && sleep 15'
                 sh '''
+                    docker exec zap mkdir -p /zap/wrk
                     docker exec zap zap-full-scan.py \
                         -t ${APP_URL} \
                         -c /var/jenkins_home/workspace/PropGest_master/tests/zap/zap.conf \
