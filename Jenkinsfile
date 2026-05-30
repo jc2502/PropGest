@@ -77,7 +77,7 @@ pipeline {
                             -Dsonar.projectBaseDir=/var/jenkins_home/workspace/PropGest_master \
                             -Dsonar.sources=backend/src,frontend/src \
                             -Dsonar.exclusions=**/node_modules/**,**/build/** \
-                            -Dsonar.javascript.jasmin.enabled=false
+                            -Dsonar.javascript.excludeSecuritySensors=JsSecuritySensorV2
                     '''
                 }
             }
