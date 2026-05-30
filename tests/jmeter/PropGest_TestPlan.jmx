@@ -22,7 +22,7 @@
         </HTTPSamplerProxy>
         <hashTree>
           <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Assert Status OK">
-            <collectionProp name="Asserion.test_strings">
+            <collectionProp name="Assertion.test_strings">
               <stringProp>-1</stringProp>
             </collectionProp>
             <intProp name="Assertion.test_field">806</intProp>
@@ -39,7 +39,7 @@
         </HTTPSamplerProxy>
         <hashTree>
           <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Assert 200">
-            <collectionProp name="Asserion.test_strings">
+            <collectionProp name="Assertion.test_strings">
               <stringProp>200</stringProp>
             </collectionProp>
             <intProp name="Assertion.test_field">806</intProp>
