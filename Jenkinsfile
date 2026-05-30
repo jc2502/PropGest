@@ -24,7 +24,7 @@ pipeline {
 
         stage('Build & Start') {
             steps {
-                sh 'docker compose up -d --build'
+                sh 'docker-compose up -d --build'
                 sh 'echo "Esperando a que backend esté listo..."'
                 sh '''
                     for i in $(seq 1 30); do
@@ -113,7 +113,7 @@ pipeline {
 
     post {
         always {
-            sh 'docker compose down'
+            sh 'docker-compose down'
             cleanWs()
         }
     }
