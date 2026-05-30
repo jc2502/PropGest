@@ -26,7 +26,8 @@ pipeline {
             steps {
                 sh 'docker-compose down --remove-orphans || true'
                 sh 'docker container prune -f || true'
-                sh 'docker-compose up -d --build'
+                sh 'docker-compose build --no-cache'
+                sh 'docker-compose up -d'
                 sh 'echo "Esperando a que backend esté listo..."'
                 sh '''
                     for i in $(seq 1 30); do
