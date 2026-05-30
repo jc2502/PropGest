@@ -100,7 +100,7 @@ pipeline {
                         -t ${APP_URL} \
                         -c /var/jenkins_home/workspace/PropGest_master/tests/zap/zap.conf \
                         -r /var/jenkins_home/workspace/PropGest_master/tests/zap/zap-report.html \
-                        -z "-config api.key=${ZAP_API_KEY}"
+                        -I
                 '''
                 sh 'docker stop zap || true'
             }
