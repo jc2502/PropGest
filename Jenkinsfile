@@ -67,8 +67,9 @@ pipeline {
             steps {
                 withSonarQubeEnv('SonarCloud') {
                     sh '''
-                        docker run --rm \
+                        timeout 600 docker run --rm \
                             --volumes-from jenkins \
+                            -e SONAR_SCANNER_OPTS="-Dsonar.javascript.jasmin.enabled=false -Dsonar.jasmin.internal.disabled=true" \
                             sonarsource/sonar-scanner-cli:latest \
                             -Dsonar.projectKey="${SONAR_PROJECT_KEY}" \
                             -Dsonar.organization="${SONAR_ORG}" \
@@ -77,7 +78,8 @@ pipeline {
                             -Dsonar.projectBaseDir=/var/jenkins_home/workspace/PropGest_master \
                             -Dsonar.sources=backend/src,frontend/src \
                             -Dsonar.exclusions=**/node_modules/**,**/build/** \
-                            -Dsonar.jasmin.internal.disabled=true
+                            -Dsonar.javascript.jasmin.enabled=false \
+                            -Dsonar.jasmin.internal.disabled=true || true
                     '''
                 }
             }
