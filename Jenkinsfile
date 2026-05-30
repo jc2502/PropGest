@@ -88,19 +88,21 @@ pipeline {
                     docker run -d --rm --name zap \
                         --network propgest_default \
                         --volumes-from jenkins \
-                        -p ${ZAP_PORT}:8090 \
-                        -e ZAP_API_KEY=${ZAP_API_KEY} \
                         ghcr.io/zaproxy/zaproxy:stable \
-                        zap.sh -daemon -port 8090 -config api.key=${ZAP_API_KEY}
+                        zap.sh -daemon -port 8090 -config api.disablekey=true -host 0.0.0.0
                 '''
-                sh 'echo "Esperando a ZAP..." && sleep 15'
+                sh 'echo "Esperando a ZAP (45s)..." && sleep 45'
                 sh '''
-                    docker exec zap mkdir -p /zap/wrk
+                    # Copiar config a /zap/wrk/ y ejecutar scan
+                    ZAP_WRK=/var/jenkins_home/workspace/PropGest_master/tests/zap
+                    docker exec zap cp $ZAP_WRK/zap.conf /zap/wrk/
                     docker exec zap zap-full-scan.py \
                         -t ${APP_URL} \
-                        -c /var/jenkins_home/workspace/PropGest_master/tests/zap/zap.conf \
-                        -r /var/jenkins_home/workspace/PropGest_master/tests/zap/zap-report.html \
+                        -c zap.conf \
+                        -r zap-report.html \
+                        -P 8090 \
                         -I
+                    docker exec zap cp /zap/wrk/zap-report.html $ZAP_WRK/
                 '''
                 sh 'docker stop zap || true'
             }
