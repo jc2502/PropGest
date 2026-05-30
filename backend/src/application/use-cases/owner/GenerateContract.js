@@ -1,6 +1,6 @@
-const contractRepository = require("../../infrastructure/repositories/ContractRepository");
-const propertyRepository = require("../../infrastructure/repositories/PropertyRepository");
-const AppError = require("../../shared/errors/AppError");
+const contractRepository = require("../../../infrastructure/repositories/ContractRepository");
+const propertyRepository = require("../../../infrastructure/repositories/PropertyRepository");
+const AppError = require("../../../shared/errors/AppError");
 
 class GenerateContract {
     async execute(data, user) {

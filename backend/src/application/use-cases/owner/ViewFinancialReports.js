@@ -1,6 +1,6 @@
-const propertyRepository = require("../../infrastructure/repositories/PropertyRepository");
-const contractRepository = require("../../infrastructure/repositories/ContractRepository");
-const paymentRepository = require("../../infrastructure/repositories/PaymentRepository");
+const propertyRepository = require("../../../infrastructure/repositories/PropertyRepository");
+const contractRepository = require("../../../infrastructure/repositories/ContractRepository");
+const paymentRepository = require("../../../infrastructure/repositories/PaymentRepository");
 
 class ViewFinancialReports {
     async execute(user) {

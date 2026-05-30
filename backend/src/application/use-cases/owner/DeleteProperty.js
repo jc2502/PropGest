@@ -1,5 +1,5 @@
-const propertyRepository = require("../../infrastructure/repositories/PropertyRepository");
-const AppError = require("../../shared/errors/AppError");
+const propertyRepository = require("../../../infrastructure/repositories/PropertyRepository");
+const AppError = require("../../../shared/errors/AppError");
 
 class DeleteProperty {
     async execute(propertyId, user) {
